@@ -702,6 +702,26 @@ width: 100%;
                 font-size: 1.5em;
             }
         }
+
+@media (min-width: 1025px) {
+    .student-box {
+        width: 250px;
+        padding: 20px;
+    }
+
+    .student-box img {
+        height: 300px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .student-box h4, 
+    .student-box p {
+        font-size: 1.1em;
+    }
+}
+
 /* footer */
 
 .footer-section {
