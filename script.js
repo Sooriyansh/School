@@ -1,5 +1,68 @@
 
 // page two
+const numbers = document.querySelectorAll('.number');
+    
+const observerOptions = {
+  threshold: 0.1
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const number = entry.target;
+      animateNumber(number);
+      observer.unobserve(number);
+    }
+  });
+}, observerOptions);
+
+numbers.forEach(number => {
+  observer.observe(number);
+});
+
+function animateNumber(element) {
+  const target = parseInt(element.getAttribute('data-target'));
+  const duration = 2000; // 2 seconds
+  const steps = 60;
+  const stepValue = target / steps;
+  let current = 0;
+  
+  const timer = setInterval(() => {
+    current += stepValue;
+    if (current >= target) {
+      element.textContent = target + '+';
+      clearInterval(timer);
+    } else {
+      element.textContent = Math.floor(current);
+    }
+  }, duration / steps);
+}
+
+// page five
+
+document.addEventListener("DOMContentLoaded", function () {
+    function setupInfiniteScroll(gridId, speed) {
+        const grid = document.getElementById(gridId);
+        grid.innerHTML += grid.innerHTML; // Duplicate content for smooth scrolling
+        let scrollAmount = 0;
+
+        function scrollAnimation() {
+            scrollAmount -= speed;
+            grid.style.transform = `translateX(${scrollAmount}px)`;
+
+            if (Math.abs(scrollAmount) >= grid.scrollWidth / 2) {
+                scrollAmount = 0;
+            }
+
+            requestAnimationFrame(scrollAnimation);
+        }
+
+        scrollAnimation();
+    }
+
+    setupInfiniteScroll("student-grid-10th", 2);
+    setupInfiniteScroll("student-grid-12th", 2);
+});
 
 // pae six
 
@@ -23,49 +86,49 @@
             // { name: "ROHIT PATEL", year: "2023-2024", percentage: 95.8, image: "/img/rohit-10-24.webp" },
             // { name: "SHEETAL PATEL", year: "2023-2024", percentage: 97, image: "/img/seetal-patel.jpg" }
         ];
-  // Function to populate the grid with student data
-    function populateStudents(gridId, students) {
-        const grid = document.getElementById(gridId);
-        grid.innerHTML = ''; // Clear existing content
-        students.forEach(student => {
-            const studentBox = document.createElement('div');
-            studentBox.className = 'student-box';
-            studentBox.innerHTML = `
-                <img src="${student.image}" alt="${student.name}" loading="lazy">
-                <p>${student.percentage}%</p>
-                <h4>Name: ${student.name}</h4>
-                <h4>Year: ${student.year}</h4>
-            `;
-            grid.appendChild(studentBox);
-        });
-    }
 
-    // Manual Scroller Logic
-    document.addEventListener("DOMContentLoaded", function () {
-        populateStudents('student-grid-12th', students12);
-        
-        const scroller = document.getElementById('student-grid-12th');
-        const scrollLeftBtn = document.getElementById('scrollLeftBtn');
-        const scrollRightBtn = document.getElementById('scrollRightBtn');
-
-        function handleScroll(direction) {
-            const card = scroller.querySelector('.student-box');
-            if (!card) return;
-            
-            const cardWidth = card.offsetWidth;
-            const cardStyle = window.getComputedStyle(card);
-            const cardMargin = parseFloat(cardStyle.marginLeft) + parseFloat(cardStyle.marginRight);
-            const scrollDistance = cardWidth + cardMargin;
-            
-            scroller.scrollBy({
-                left: direction * scrollDistance,
-                behavior: 'smooth'
+        function populateStudents(gridId, students) {
+            const grid = document.getElementById(gridId);
+            students.forEach(student => {
+                const studentBox = document.createElement('div');
+                studentBox.className = 'student-box';
+                studentBox.innerHTML = `
+                    <img src="${student.image}" alt="Topper" loading="lazy">
+                    <p>${student.percentage}%</p>
+                    <h4>Name: ${student.name}</h4>
+                    <h4>Year: ${student.year}</h4>
+                `;
+                grid.appendChild(studentBox);
             });
+            grid.innerHTML += grid.innerHTML;
         }
-        
-        scrollRightBtn.addEventListener('click', () => handleScroll(1));
-        scrollLeftBtn.addEventListener('click', () => handleScroll(-1));
-    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            populateStudents('student-grid-12th', students12);
+            populateStudents('student-grid-10th', students10);
+
+            function setupInfiniteScroll(gridId, speed) {
+                const grid = document.getElementById(gridId);
+                if (grid.children.length === 0) return;
+                let scrollAmount = 0;
+
+                function scrollAnimation() {
+                    scrollAmount -= speed;
+                    grid.style.transform = `translateX(${scrollAmount}px)`;
+
+                    if (Math.abs(scrollAmount) >= grid.scrollWidth / 2) {
+                        scrollAmount = 0;
+                    }
+
+                    requestAnimationFrame(scrollAnimation);
+                }
+
+                scrollAnimation();
+            }
+
+            setupInfiniteScroll("student-grid-10th", 2);
+            setupInfiniteScroll("student-grid-12th", 2);
+
             // Scroll-based reveal for topper boxes
             const topperBoxes = document.querySelectorAll('.topper-box');
             const observerOptions = {
@@ -155,5 +218,4 @@
             document.querySelectorAll('.image-box').forEach(box => {
                 observer.observe(box);
             });
-
         });
